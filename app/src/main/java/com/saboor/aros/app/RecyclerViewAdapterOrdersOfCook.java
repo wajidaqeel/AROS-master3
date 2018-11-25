@@ -5,13 +5,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.saboor.aros.R;
+import com.saboor.aros.app.listener.OnSwipeTouchListener;
 import com.saboor.aros.app.models.Order;
 
 import java.util.List;
@@ -36,23 +36,11 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
         View v;
         v = LayoutInflater.from(mContext).inflate(R.layout.layout_orders_of_cook,parent,false);
         final OrderViewHolder vHolder = new OrderViewHolder(v);
-
-        vHolder.order_row.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Log.i("testing","!23");
-                /*mContext.startActivity(new Intent(mContext, OthersFypDetailActivity.class).
-                        putExtra("project",mData.get(vHolder.getAdapterPosition())));*/
-            }
-        });
-
         return vHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull OrderViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull OrderViewHolder holder, final int position)
     {
 
         holder.order_name.setText(mData.get(position).getItemName());
@@ -62,13 +50,11 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
         {
             holder.itemView.setBackgroundColor(Color.parseColor("#ffeee0"));
             holder.button.setVisibility(View.INVISIBLE);
-
         }
         else if(status.equals("Waiting"))
         {
             holder.itemView.setBackgroundColor(Color.parseColor("#ff6961"));
             holder.button.setVisibility(View.INVISIBLE);
-
         }
         else if(status.equals("Ready"))
         {
@@ -76,6 +62,32 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
             holder.button.setVisibility(View.VISIBLE);
         }
 
+        holder.order_row.setOnTouchListener(new OnSwipeTouchListener(mContext)
+        {
+            public void onSwipeRight()
+            {
+                if(mData.get(position).getStatus().equals("Ready"))
+                {
+                    Toast.makeText(mContext, "Order has been served", Toast.LENGTH_SHORT).show();
+                    mData.remove(position);
+                    MainActivity.adapter2.notifyDataSetChanged();
+                }
+
+                else if(mData.get(position).getStatus().equals("Waiting"))
+                {
+                    Toast.makeText(mContext, "Order Cancelled", Toast.LENGTH_SHORT).show();
+                    mData.remove(position);
+                    MainActivity.adapter2.notifyDataSetChanged();
+                }
+
+                else if(mData.get(position).getStatus().equals("Cooking"))
+                {
+                    Toast.makeText(mContext, "Order has been wasted", Toast.LENGTH_SHORT).show();
+                    mData.remove(position);
+                    MainActivity.adapter2.notifyDataSetChanged();
+                }
+            }
+        });
 
         // new ImageDownload(holder.project_image,mContext).execute(mData.get(position).getProjectImage());
     }

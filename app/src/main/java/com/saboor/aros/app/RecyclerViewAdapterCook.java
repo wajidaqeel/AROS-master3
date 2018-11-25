@@ -38,9 +38,8 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position)
     {
-
         holder.name.setText(mChefs.get(position).getName());
-         boolean flag=false;
+        boolean flag=false;
 
         holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +55,6 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
             }
         });
 
-
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -69,17 +67,7 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
                 Toast.makeText(mContext, mChefs.get(position).getName(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
-
     }
-
-
-
-
-
-
 
     @Override
     public int getItemCount()
