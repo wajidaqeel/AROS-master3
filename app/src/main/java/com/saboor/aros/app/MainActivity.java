@@ -1,12 +1,20 @@
 package com.saboor.aros.app;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 
 import com.saboor.aros.R;
@@ -74,10 +82,9 @@ public class MainActivity extends AppCompatActivity
 
     private void getOrdersOfChef()
     {
-        mChefs.get(0).addOrder(new Order("Cooking","Rice"));
-        mChefs.get(0).addOrder(new Order("Waiting","Pasta"));
         mChefs.get(0).addOrder(new Order("Ready","Burger"));
         mChefs.get(0).addOrder(new Order("Ready","Fries"));
+        mChefs.get(0).addOrder(new Order("Cooking","Rice"));
         mChefs.get(0).addOrder(new Order("Cooking","Chicken Maslaa"));
         mChefs.get(0).addOrder(new Order("Cooking","Egg Fried Rice"));
         mChefs.get(0).addOrder(new Order("Cooking","Chinese Rice"));
@@ -85,12 +92,9 @@ public class MainActivity extends AppCompatActivity
         mChefs.get(0).addOrder(new Order("Cooking","1"));
         mChefs.get(0).addOrder(new Order("Cooking","2"));
         mChefs.get(0).addOrder(new Order("Cooking","3"));
-        mChefs.get(0).addOrder(new Order("Cooking","4"));
-        mChefs.get(0).addOrder(new Order("Cooking","5"));
-        mChefs.get(0).addOrder(new Order("Cooking","6"));
-        mChefs.get(0).addOrder(new Order("Cooking","7"));
         mChefs.get(0).addOrder(new Order("Cooking","8"));
-
+        mChefs.get(0).addOrder(new Order("Waiting","Pasta"));
+        mChefs.get(0).addOrder(new Order("Waiting","Mutton handi"));
 
         mChefs.get(1).addOrder(new Order("Cooking","Zinger"));
         mChefs.get(1).addOrder(new Order("Cooking","Fries"));
