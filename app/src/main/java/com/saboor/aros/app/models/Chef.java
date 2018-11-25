@@ -1,8 +1,9 @@
 package com.saboor.aros.app.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Chef
+public class Chef implements Serializable
 {
     private String mName;
     private ArrayList<Order> mOrder;

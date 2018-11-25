@@ -1,20 +1,13 @@
 package com.saboor.aros.app;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 
 import com.saboor.aros.R;
@@ -25,10 +18,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
-    private ArrayList<Chef> mChefs = new ArrayList<>();
+    public static ArrayList<Chef> mChefs = new ArrayList<>();
     public static int chefNo = 0;
     public static RecyclerViewAdapterOrdersOfCook adapter2 = null;
     ActionBar actionBar;
+    TextView mChefNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,9 +32,13 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         actionBar=getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffff8800")));
+
+        mChefNo = findViewById(R.id.chefno);
+
         //getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.cardview_dark_background)));
-        getChefs();
-        getOrdersOfChef();
+        ExtractChefsFromDb();
+        ExtractOrdersOfChefsFromDb();
+
 
         /*if(findViewById(R.id.list_of_items) != null)
         {
@@ -58,8 +56,10 @@ public class MainActivity extends AppCompatActivity
         }*/
     }
 
-    private void getChefs()
+    private void ExtractChefsFromDb()
     {
+        mChefs.clear();
+
         mChefs.add(new Chef("Chef 1"));
         mChefs.add(new Chef("Chef 2"));
         mChefs.add(new Chef("Chef 3"));
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
         initRecyclerView();
     }
 
-    private void getOrdersOfChef()
+    private void ExtractOrdersOfChefsFromDb()
     {
         mChefs.get(0).addOrder(new Order("Ready","Burger"));
         mChefs.get(0).addOrder(new Order("Ready","Fries"));
@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity
         mChefs.get(6).addOrder(new Order("Cooking","Egg Fried Rice"));
         mChefs.get(6).addOrder(new Order("Cooking","Chinese Rice"));
 
+        mChefNo.setText("Orders of chef " + (chefNo + 1));
         initRecyclerView2(chefNo);
     }
 

@@ -2,9 +2,12 @@ package com.saboor.aros.app;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,8 @@ import com.saboor.aros.R;
 import com.saboor.aros.app.listener.OnSwipeTouchListener;
 import com.saboor.aros.app.models.Order;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -25,10 +30,10 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderViewHolder>
 {
     Context mContext;
-    List<Order> mData;
+    ArrayList<Order> mData;
     Dialog myDialog;
 
-    public RecyclerViewAdapterOrdersOfCook(Context context, List<Order> data)
+    public RecyclerViewAdapterOrdersOfCook(Context context, ArrayList<Order> data)
     {
         mContext = context;
         mData = data;
@@ -54,12 +59,12 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
         if(status.equals("Cooking"))
         {
             holder.itemView.setBackgroundColor(Color.parseColor("#ffeee0"));
-            holder.button.setVisibility(View.VISIBLE);
+            holder.button.setVisibility(View.INVISIBLE);
         }
         else if(status.equals("Waiting"))
         {
             holder.itemView.setBackgroundColor(Color.parseColor("#ff6961"));
-            holder.button.setVisibility(View.INVISIBLE);
+            holder.button.setVisibility(View.VISIBLE);
         }
         else if(status.equals("Ready"))
         {
@@ -80,13 +85,13 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
             }
         });
 
-        // Head Chef presses ">" button
+        // Head Chef presses ">" button (waiting order)
         holder.button.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                chooseChef(mContext);
+                chooseChef();
             }
         });
 
@@ -106,15 +111,10 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
         }
     }
 
-    public void chooseChef(final Context context)
+    public void chooseChef()
     {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
-        View view = inflater.inflate(R.layout.dialogue_choose_chef, null);
-        mBuilder.setView(view);
-        final AlertDialog dialog = mBuilder.create();
-        dialog.show();
+        Intent intent = new Intent(mContext, CooksListActivity.class);
+        mContext.startActivity(intent);
     }
 
     private void removeItemFromList(int position)

@@ -16,12 +16,12 @@ import com.saboor.aros.app.models.Chef;
 
 import java.util.ArrayList;
 
-public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAdapterCook.ViewHolder>
+public class RecyclerViewAdapterCookList extends RecyclerView.Adapter<RecyclerViewAdapterCookList.ViewHolder>
 {
     private ArrayList<Chef> mChefs = new ArrayList<>();
     private Context mContext;
 
-    public RecyclerViewAdapterCook(Context context, ArrayList<Chef> chefs)
+    public RecyclerViewAdapterCookList(Context context, ArrayList<Chef> chefs)
     {
         this.mChefs = chefs;
         mContext = context;
@@ -52,8 +52,7 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
 
                 mContext.startActivity(i);
 
-                Toast.makeText(mContext, mChefs.get(position).getName(), Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(mContext, mChefs.get(position).getName() + " has been assigned the dish", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -69,7 +68,8 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
 
                 mContext.startActivity(i);
 
-                Toast.makeText(mContext, mChefs.get(position).getName(), Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(mContext, mChefs.get(position).getName() + " has been assigned the dish", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -91,10 +91,5 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
             name = itemView.findViewById(R.id.name);
             imageView=itemView.findViewById(R.id.imageView);
         }
-    }
-
-    private void startNewChef()
-    {
-
     }
 }
