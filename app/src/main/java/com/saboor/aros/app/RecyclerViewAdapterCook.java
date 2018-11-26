@@ -3,6 +3,7 @@ package com.saboor.aros.app;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
 {
     private ArrayList<Chef> mChefs = new ArrayList<>();
     private Context mContext;
+    public static ArrayList<RecyclerViewAdapterOrdersOfCook> adapters = new ArrayList<>();
 
     public RecyclerViewAdapterCook(Context context, ArrayList<Chef> chefs)
     {
@@ -38,7 +40,14 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
     public void onBindViewHolder(final ViewHolder holder, final int position)
     {
         holder.name.setText(mChefs.get(position).getName());
-        boolean flag=false;
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        final RecyclerView recyclerView = holder.mRecyclerView;
+        recyclerView.setLayoutManager(layoutManager);
+
+        RecyclerViewAdapterOrdersOfCook adapter2 = new RecyclerViewAdapterOrdersOfCook(mContext, mChefs.get(position).getOrder(),position);
+        adapters.add(adapter2);
+        recyclerView.setAdapter(adapters.get(adapters.size()-1));
 
         holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,17 +93,14 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
     {
         TextView name;
         ImageView imageView;
+        RecyclerView mRecyclerView;
 
         public ViewHolder(View itemView)
         {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             imageView=itemView.findViewById(R.id.imageView);
+            mRecyclerView=itemView.findViewById(R.id.recyclerview5);
         }
-    }
-
-    private void startNewChef()
-    {
-
     }
 }

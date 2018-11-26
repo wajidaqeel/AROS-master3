@@ -20,9 +20,7 @@ public class MainActivity extends AppCompatActivity
 {
     public static ArrayList<Chef> mChefs = new ArrayList<>();
     public static int chefNo = 0;
-    public static RecyclerViewAdapterOrdersOfCook adapter2 = null;
     ActionBar actionBar;
-    TextView mChefNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,8 +30,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         actionBar=getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffff8800")));
-
-        mChefNo = findViewById(R.id.chefno);
 
         //getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.cardview_dark_background)));
         ExtractChefsFromDb();
@@ -105,9 +101,6 @@ public class MainActivity extends AppCompatActivity
         mChefs.get(5).addOrder(new Order("Cooking","Chicken Maslaa"));
         mChefs.get(6).addOrder(new Order("Cooking","Egg Fried Rice"));
         mChefs.get(6).addOrder(new Order("Cooking","Chinese Rice"));
-
-        mChefNo.setText("Orders of chef " + (chefNo + 1));
-        initRecyclerView2(chefNo);
     }
 
     private void initRecyclerView()
@@ -118,17 +111,5 @@ public class MainActivity extends AppCompatActivity
 
         RecyclerViewAdapterCook adapter = new RecyclerViewAdapterCook(this, mChefs);
         recyclerView.setAdapter(adapter);
-    }
-
-    private void initRecyclerView2(int chefNo)
-    {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        final RecyclerView recyclerView = findViewById(R.id.recyclerview2);
-        recyclerView.setLayoutManager(layoutManager);
-
-        adapter2 = new RecyclerViewAdapterOrdersOfCook(this, mChefs.get(chefNo).getOrder());
-
-        //final RecyclerViewAdapterOrdersOfCook adapter = new RecyclerViewAdapterOrdersOfCook(this, mChefs.get(chefNo).getOrder());
-        recyclerView.setAdapter(adapter2);
     }
 }

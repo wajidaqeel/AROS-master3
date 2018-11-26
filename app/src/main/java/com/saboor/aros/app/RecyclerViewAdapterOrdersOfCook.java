@@ -32,11 +32,13 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
     Context mContext;
     ArrayList<Order> mData;
     Dialog myDialog;
+    int mCookNo;
 
-    public RecyclerViewAdapterOrdersOfCook(Context context, ArrayList<Order> data)
+    public RecyclerViewAdapterOrdersOfCook(Context context, ArrayList<Order> data, int cookNo)
     {
         mContext = context;
         mData = data;
+        mCookNo = cookNo;
     }
 
     @NonNull
@@ -72,16 +74,13 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
             holder.button.setVisibility(View.INVISIBLE);
         }
 
-        holder.order_row.setOnTouchListener(new OnSwipeTouchListener(mContext)
+        holder.order_row.setOnLongClickListener(new View.OnLongClickListener()
         {
-            public void onSwipeRight()
+            @Override
+            public boolean onLongClick(View view)
             {
                 removeItemFromList(position);
-            }
-
-            public void onSwipeLeft()
-            {
-                removeItemFromList(position);
+                return false;
             }
         });
 
@@ -123,21 +122,21 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
         {
             Toast.makeText(mContext, "Order has been served", Toast.LENGTH_SHORT).show();
             mData.remove(position);
-            MainActivity.adapter2.notifyDataSetChanged();
+            RecyclerViewAdapterCook.adapters.get(mCookNo).notifyDataSetChanged();
         }
 
         else if(mData.get(position).getStatus().equals("Waiting"))
         {
             Toast.makeText(mContext, "Order Cancelled", Toast.LENGTH_SHORT).show();
             mData.remove(position);
-            MainActivity.adapter2.notifyDataSetChanged();
+            RecyclerViewAdapterCook.adapters.get(mCookNo).notifyDataSetChanged();
         }
 
         else if(mData.get(position).getStatus().equals("Cooking"))
         {
             Toast.makeText(mContext, "Order has been wasted", Toast.LENGTH_SHORT).show();
             mData.remove(position);
-            MainActivity.adapter2.notifyDataSetChanged();
+            RecyclerViewAdapterCook.adapters.get(mCookNo).notifyDataSetChanged();
         }
     }
 }
