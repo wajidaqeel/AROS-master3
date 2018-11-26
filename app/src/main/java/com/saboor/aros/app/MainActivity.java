@@ -1,5 +1,6 @@
 package com.saboor.aros.app;
 
+import android.content.res.Resources;
 import android.support.v7.app.ActionBar;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.widget.TextView;
 
 
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         actionBar=getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffff8800")));
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>AROS </font>"));
 
         //getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.cardview_dark_background)));
         ExtractChefsFromDb();
@@ -66,12 +69,6 @@ public class MainActivity extends AppCompatActivity
         mChefs.add(new Chef("Chef 8"));
         mChefs.add(new Chef("Chef 9"));
         mChefs.add(new Chef("Chef 10"));
-        mChefs.add(new Chef("Chef 11"));
-        mChefs.add(new Chef("Chef 12"));
-        mChefs.add(new Chef("Chef 13"));
-        mChefs.add(new Chef("Chef 14"));
-        mChefs.add(new Chef("Chef 15"));
-
 
         initRecyclerView();
     }
@@ -101,6 +98,9 @@ public class MainActivity extends AppCompatActivity
         mChefs.get(5).addOrder(new Order("Cooking","Chicken Maslaa"));
         mChefs.get(6).addOrder(new Order("Cooking","Egg Fried Rice"));
         mChefs.get(6).addOrder(new Order("Cooking","Chinese Rice"));
+        mChefs.get(7).addOrder(new Order("Ready","Chinese Rice"));
+        mChefs.get(7).addOrder(new Order("Ready","Chinese Rice"));
+        mChefs.get(7).addOrder(new Order("Waiting","Chinese Rice"));
     }
 
     private void initRecyclerView()
