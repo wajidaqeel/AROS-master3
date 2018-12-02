@@ -9,6 +9,16 @@ public class Chef implements Serializable
     private String id;
     private ArrayList<Order> mOrder;
 
+    public boolean isPresent() {
+        return isPresent;
+    }
+
+    public void setPresent(boolean present) {
+        isPresent = present;
+    }
+
+    private boolean isPresent = false;
+
     public Chef(String name)
     {
         mName = name;

@@ -81,6 +81,18 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
                 Toast.makeText(mContext, mChefs.get(position).getName(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        if(!mChefs.get(position).isPresent()){
+            holder.name.setVisibility(View.GONE);
+            holder.imageView.setVisibility(View.GONE);
+            holder.mRecyclerView.setVisibility(View.GONE);
+        }
+        else{
+            holder.name.setVisibility(View.VISIBLE);
+            holder.imageView.setVisibility(View.VISIBLE);
+            holder.mRecyclerView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override

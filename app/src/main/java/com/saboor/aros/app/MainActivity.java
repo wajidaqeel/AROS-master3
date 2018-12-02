@@ -3,6 +3,9 @@ package com.saboor.aros.app;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v7.app.ActionBar;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.saboor.aros.app.AttendanceActivity;
 import com.saboor.aros.R;
+import com.saboor.aros.app.models.AttendanceDb;
 import com.saboor.aros.app.models.Chef;
 import com.saboor.aros.app.models.EmployeeDb;
 import com.saboor.aros.app.models.Order;
@@ -32,12 +36,14 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
 {
     public static ArrayList<Chef> mChefs = new ArrayList<>();
+    //public static ArrayList<Chef> allChefs = new ArrayList<>();
     int x = 1;
     public static int chefNo = 0;
     FirebaseDatabase mDatabase;
     DatabaseReference myDbRef;
     ActionBar actionBar;
     ProgressDialog progressDialog;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -79,7 +85,19 @@ public class MainActivity extends AppCompatActivity
     public void openAttendance(View view){
 
         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
+        intent.putExtra("chefs", new ArrayList<>(mChefs));
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK){
+            if (requestCode == 123){
+                recyclerView.notify();
+            }
+        }
     }
 
     private void ExtractChefsFromDb()
@@ -96,13 +114,16 @@ public class MainActivity extends AppCompatActivity
         mChefs.add(new Chef("Chef 8"));
         mChefs.add(new Chef("Chef 9"));
         mChefs.add(new Chef("Chef 10"));*/
-        progressDialog.show();
+
         progressDialog.setMessage("Loading Chefs...");
+        progressDialog.show();
+
         myDbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+
                     EmployeeDb employee = postSnapshot.getValue(EmployeeDb.class);
 
                     if (employee.getType().equals("Chef")){
@@ -122,7 +143,29 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        progressDialog.setMessage("Loading availability info...");
+        progressDialog.show();
+        FirebaseDatabase.getInstance().getReference("Attendance").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    AttendanceDb attendance = snapshot.getValue(AttendanceDb.class);
+
+                    for (Chef chef: mChefs){
+                        if(chef.getId().equals(attendance.getId()))
+                            chef.setPresent(attendance.isPresent());
+                    }
+                }
+
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                progressDialog.dismiss();
+            }
+        });
 
     }
 
@@ -159,7 +202,7 @@ public class MainActivity extends AppCompatActivity
     private void initRecyclerView()
     {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
 
         RecyclerViewAdapterCook adapter = new RecyclerViewAdapterCook(this, mChefs);
