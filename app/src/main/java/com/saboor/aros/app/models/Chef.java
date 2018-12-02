@@ -8,9 +8,18 @@ public class Chef implements Serializable
     private String mName;
     private String id;
     private ArrayList<Order> mOrder;
+    private String specialty;
 
     public boolean isPresent() {
         return isPresent;
+    }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
     }
 
     public void setPresent(boolean present) {

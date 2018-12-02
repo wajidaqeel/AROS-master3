@@ -2,9 +2,9 @@ package com.saboor.aros.app.models;
 
 public class AttendanceDb {
     private String id;
-    private boolean present;
+    private Boolean present;
 
-    public AttendanceDb(String id, boolean present) {
+    public AttendanceDb(String id, Boolean present) {
         this.id = id;
         this.present = present;
     }
@@ -20,11 +20,11 @@ public class AttendanceDb {
         this.id = id;
     }
 
-    public boolean isPresent() {
+    public Boolean getPresent() {
         return present;
     }
 
-    public void setPresent(boolean present) {
+    public void setPresent(Boolean present) {
         this.present = present;
     }
 }

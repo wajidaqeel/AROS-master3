@@ -36,6 +36,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
 {
     public static ArrayList<Chef> mChefs = new ArrayList<>();
+    public static ArrayList<AttendanceDb> attendanceDbs = new ArrayList<>();
     //public static ArrayList<Chef> allChefs = new ArrayList<>();
     int x = 1;
     public static int chefNo = 0;
@@ -100,6 +101,31 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void loadAttendance(){
+        mDatabase.getReference("Attendance").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
+
+                for (DataSnapshot postSnapshot : datasnapshot.getChildren()) {
+                    AttendanceDb attendance = postSnapshot.getValue(AttendanceDb.class);
+
+                    for (Chef chef: mChefs){
+                        if(chef.getId().equals(attendance.getId()))
+                            chef.setPresent(new Boolean(attendance.getPresent().booleanValue()));
+                    }
+                }
+
+                progressDialog.dismiss();
+                initRecyclerView();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                progressDialog.dismiss();
+            }
+        });
+    }
+
     private void ExtractChefsFromDb()
     {
         /*mChefs.clear();
@@ -131,8 +157,8 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 progressDialog.dismiss();
-                initRecyclerView();
                 ExtractOrdersOfChefsFromDb();
+                loadAttendance();
             }
 
             @Override
@@ -145,27 +171,8 @@ public class MainActivity extends AppCompatActivity
 
         progressDialog.setMessage("Loading availability info...");
         progressDialog.show();
-        FirebaseDatabase.getInstance().getReference("Attendance").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    AttendanceDb attendance = snapshot.getValue(AttendanceDb.class);
 
-                    for (Chef chef: mChefs){
-                        if(chef.getId().equals(attendance.getId()))
-                            chef.setPresent(attendance.isPresent());
-                    }
-                }
-
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                progressDialog.dismiss();
-            }
-        });
 
     }
 
