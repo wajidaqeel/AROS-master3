@@ -12,6 +12,7 @@ import android.text.Html;
 import android.widget.TextView;
 
 
+import com.google.firebase.database.FirebaseDatabase;
 import com.saboor.aros.R;
 import com.saboor.aros.app.models.Chef;
 import com.saboor.aros.app.models.Order;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity
 {
     public static ArrayList<Chef> mChefs = new ArrayList<>();
     public static int chefNo = 0;
+    FirebaseDatabase mDatabase;
     ActionBar actionBar;
 
     @Override
@@ -34,9 +36,13 @@ public class MainActivity extends AppCompatActivity
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffff8800")));
         actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>AROS </font>"));
 
+        //Initializing Database
+        mDatabase = FirebaseDatabase.getInstance();
+
         //getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.cardview_dark_background)));
         ExtractChefsFromDb();
         ExtractOrdersOfChefsFromDb();
+
 
 
         /*if(findViewById(R.id.list_of_items) != null)
