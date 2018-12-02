@@ -6,12 +6,27 @@ import java.util.ArrayList;
 public class Chef implements Serializable
 {
     private String mName;
+    private String id;
     private ArrayList<Order> mOrder;
 
     public Chef(String name)
     {
         mName = name;
         mOrder = new ArrayList<>();
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Chef(String mName, String id, ArrayList<Order> mOrder) {
+        this.mName = mName;
+        this.id = id;
+        this.mOrder = mOrder;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName()

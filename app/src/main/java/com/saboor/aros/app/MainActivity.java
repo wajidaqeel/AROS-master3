@@ -1,5 +1,7 @@
 package com.saboor.aros.app;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.app.ActionBar;
 import android.graphics.Color;
@@ -9,12 +11,20 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.saboor.aros.app.AttendanceActivity;
 import com.saboor.aros.R;
 import com.saboor.aros.app.models.Chef;
+import com.saboor.aros.app.models.EmployeeDb;
 import com.saboor.aros.app.models.Order;
 
 import java.util.ArrayList;
@@ -25,7 +35,9 @@ public class MainActivity extends AppCompatActivity
     int x = 1;
     public static int chefNo = 0;
     FirebaseDatabase mDatabase;
+    DatabaseReference myDbRef;
     ActionBar actionBar;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,13 +48,15 @@ public class MainActivity extends AppCompatActivity
         actionBar=getSupportActionBar();
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffff8800")));
         actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>AROS </font>"));
+        progressDialog = new ProgressDialog(MainActivity.this);
 
         //Initializing Database
         mDatabase = FirebaseDatabase.getInstance();
+        myDbRef = mDatabase.getReference("Employee");
 
         //getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.cardview_dark_background)));
         ExtractChefsFromDb();
-        ExtractOrdersOfChefsFromDb();
+
 
 
 
@@ -62,9 +76,15 @@ public class MainActivity extends AppCompatActivity
         }*/
     }
 
+    public void openAttendance(View view){
+
+        Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
+        startActivity(intent);
+    }
+
     private void ExtractChefsFromDb()
     {
-        mChefs.clear();
+        /*mChefs.clear();
 
         mChefs.add(new Chef("Chef 1"));
         mChefs.add(new Chef("Chef 2"));
@@ -75,9 +95,35 @@ public class MainActivity extends AppCompatActivity
         mChefs.add(new Chef("Chef 7"));
         mChefs.add(new Chef("Chef 8"));
         mChefs.add(new Chef("Chef 9"));
-        mChefs.add(new Chef("Chef 10"));
+        mChefs.add(new Chef("Chef 10"));*/
+        progressDialog.show();
+        progressDialog.setMessage("Loading Chefs...");
+        myDbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
 
-        initRecyclerView();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    EmployeeDb employee = postSnapshot.getValue(EmployeeDb.class);
+
+                    if (employee.getType().equals("Chef")){
+                        mChefs.add(new Chef(employee.getName(), employee.getId(), new ArrayList<Order>()));
+                    }
+                }
+                progressDialog.dismiss();
+                initRecyclerView();
+                ExtractOrdersOfChefsFromDb();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //Log.w(TAG, "Failed to read value.", error.toException());
+                progressDialog.dismiss();
+            }
+        });
+
+
+
     }
 
     private void ExtractOrdersOfChefsFromDb()
@@ -96,7 +142,7 @@ public class MainActivity extends AppCompatActivity
         mChefs.get(0).addOrder(new Order("Waiting","Pasta"));
         mChefs.get(0).addOrder(new Order("Waiting","Mutton handi"));
 
-        mChefs.get(1).addOrder(new Order("Cooking","Zinger"));
+       /* mChefs.get(1).addOrder(new Order("Cooking","Zinger"));
         mChefs.get(1).addOrder(new Order("Cooking","Fries"));
         mChefs.get(2).addOrder(new Order("Cooking","Biryani"));
         mChefs.get(2).addOrder(new Order("Waiting","Egg"));
@@ -107,7 +153,7 @@ public class MainActivity extends AppCompatActivity
         mChefs.get(6).addOrder(new Order("Cooking","Chinese Rice"));
         mChefs.get(7).addOrder(new Order("Ready","Chinese Rice"));
         mChefs.get(7).addOrder(new Order("Ready","Chinese Rice"));
-        mChefs.get(7).addOrder(new Order("Waiting","Chinese Rice"));
+        mChefs.get(7).addOrder(new Order("Waiting","Chinese Rice"));*/
     }
 
     private void initRecyclerView()
