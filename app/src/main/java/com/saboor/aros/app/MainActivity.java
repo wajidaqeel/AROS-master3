@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.TextView;
 
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,15 +29,24 @@ import com.saboor.aros.app.AttendanceActivity;
 import com.saboor.aros.R;
 import com.saboor.aros.app.models.AttendanceDb;
 import com.saboor.aros.app.models.Chef;
+import com.saboor.aros.app.models.Dish;
+import com.saboor.aros.app.models.DishDb;
 import com.saboor.aros.app.models.EmployeeDb;
 import com.saboor.aros.app.models.Order;
+import com.saboor.aros.app.models.OrderDetailsDb;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
+    public static int WAITING = 0;
+    public static int COOKING = 1;
+    public static int READY = 2;
+
     public static ArrayList<Chef> mChefs = new ArrayList<>();
     public static ArrayList<AttendanceDb> attendanceDbs = new ArrayList<>();
+    public static ArrayList<DishDb> dishes = new ArrayList<>();
+    public ArrayList<OrderDetailsDb> orderDetails = new ArrayList<>();
     //public static ArrayList<Chef> allChefs = new ArrayList<>();
     int x = 1;
     public static int chefNo = 0;
@@ -66,6 +76,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
+        //ExtractOrders();
 
         /*if(findViewById(R.id.list_of_items) != null)
         {
@@ -83,6 +94,175 @@ public class MainActivity extends AppCompatActivity
         }*/
     }
 
+    public static int getDishCookingTime(String dish){
+        for(DishDb dis:dishes){
+            if(dis.getDishName().equals(dish))
+                return Integer.parseInt(dis.getEstimatedTime());
+        }
+
+        return 0;
+    }
+
+    public static String getDishType(String dish){
+        for(DishDb dis:dishes){
+            if(dis.getDishName().equals(dish))
+                return dis.getType();
+        }
+
+        return "";
+    }
+
+    private boolean assignDishToChef(OrderDetailsDb dish){
+        Chef temp = null;
+        int time = -1;
+
+        for(Chef chef:mChefs){
+            if (chef.isPresent()){
+                if(chef.getSpecialty().equals(getDishType(dish.getDishname()))){
+                    if (time == -1){
+                        temp = chef;
+                        time = chef.returnWaitingTime();
+                    }
+                    else{
+                        if(chef.returnWaitingTime() < temp.returnWaitingTime()){
+                            time = chef.returnWaitingTime();
+                            temp = chef;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(time != -1){
+            temp.addDish(dish);
+            temp.addOrder(new Order(( new Integer(dish.getStatus())).toString(), dish.getDishname()));
+            updateDishTime(dish, temp.returnCookingTime() + temp.returnWaitingTime());
+            return true;
+        }
+
+
+        for(Chef chef:mChefs){
+            if (chef.isPresent()){
+
+                if (time == -1){
+                    temp = chef;
+                    time = chef.returnWaitingTime();
+                }
+                else{
+                    if(chef.returnWaitingTime() < temp.returnWaitingTime()){
+                        time = chef.returnWaitingTime();
+                        temp = chef;
+                    }
+                }
+
+            }
+        }
+
+        if (time != -1){
+            temp.addDish(dish);
+            temp.addOrder(new Order(( new Integer(dish.getStatus())).toString(), dish.getDishname()));
+            updateDishTime(dish, temp.returnCookingTime() + temp.returnWaitingTime());
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private void reinitializeCookAdapter(){
+        RecyclerViewAdapterCook adapter = new RecyclerViewAdapterCook(this, mChefs);
+        recyclerView.setAdapter(adapter);
+        //recyclerView.notify();
+    }
+
+    private void updateDishStatus(OrderDetailsDb dish, int newStatus){
+        mDatabase.getReference("OrderDetails").child(dish.getNodeId()).child("status").setValue(newStatus);
+        dish.setStatus(newStatus);
+
+    }
+
+    private void updateDishTime(OrderDetailsDb dish, int newTime){
+        mDatabase.getReference("OrderDetails").child(dish.getNodeId()).child("estimatedtime").setValue(newTime);
+        dish.setEstimatedtime(newTime);
+    }
+
+    private void ExtractOrders(){
+        mDatabase.getReference("OrderDetails").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                startProgressBar("Adding new dish...");
+
+                OrderDetailsDb dish = dataSnapshot.getValue(OrderDetailsDb.class);
+                dish.setNodeId(dataSnapshot.getKey());
+
+                if(!assignDishToChef(dish)){
+                    orderDetails.add(dish);
+                }
+                else{
+                    reinitializeCookAdapter();
+                   // if (dish.getDishname().equals("Soup"))
+                     //   updateDishStatus(dish, 9);
+                }
+
+                dismissProgressBar();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void startProgressBar(String message){
+        progressDialog.setMessage(message);
+        progressDialog.show();
+
+    }
+
+    private void dismissProgressBar(){
+        progressDialog.dismiss();
+    }
+
+    public void ExtractMenuFromDb(){
+        mDatabase.getReference("Menu").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                startProgressBar("Loading Menu...");
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    DishDb dish = postSnapshot.getValue(DishDb.class);
+                    dishes.add(dish);
+                }
+
+                dismissProgressBar();
+
+                ExtractOrders();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void openAttendance(View view){
 
         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
@@ -96,6 +276,9 @@ public class MainActivity extends AppCompatActivity
 
         if (resultCode == RESULT_OK){
             if (requestCode == 123){
+                for (OrderDetailsDb dish:orderDetails){
+                    assignDishToChef(dish);
+                }
                 recyclerView.notify();
             }
         }
@@ -118,6 +301,8 @@ public class MainActivity extends AppCompatActivity
 
                 progressDialog.dismiss();
                 initRecyclerView();
+
+                ExtractMenuFromDb();
             }
 
             @Override
@@ -154,7 +339,7 @@ public class MainActivity extends AppCompatActivity
                     EmployeeDb employee = postSnapshot.getValue(EmployeeDb.class);
 
                     if (employee.getType().equals("Chef")){
-                        mChefs.add(new Chef(employee.getName(), employee.getId(), new ArrayList<Order>()));
+                        mChefs.add(new Chef(employee.getName(), employee.getId(), new ArrayList<Order>(), employee.getSpeciality(), new ArrayList<OrderDetailsDb>(), true));
                     }
                 }
                 //progressDialog.dismiss();

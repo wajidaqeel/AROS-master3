@@ -10,6 +10,14 @@ public class EmployeeDb {
     private String specialty;
     private String type;
 
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
     public EmployeeDb(String email, String id, String name, String password, String salary, String speciality, String type) {
         this.email = email;
         this.id = id;

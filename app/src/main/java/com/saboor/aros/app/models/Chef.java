@@ -1,7 +1,10 @@
 package com.saboor.aros.app.models;
 
+import com.saboor.aros.app.MainActivity;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.MissingFormatArgumentException;
 
 public class Chef implements Serializable
 {
@@ -9,6 +12,45 @@ public class Chef implements Serializable
     private String id;
     private ArrayList<Order> mOrder;
     private String specialty;
+    private ArrayList<OrderDetailsDb> ChefQueue;
+
+    public Chef(String mName, String id, ArrayList<Order> mOrder, String specialty, ArrayList<OrderDetailsDb> chefQueue, boolean isPresent) {
+        this.mName = mName;
+        this.id = id;
+        this.mOrder = mOrder;
+        this.specialty = specialty;
+        ChefQueue = chefQueue;
+        this.isPresent = isPresent;
+    }
+
+    public Chef(String mName, String id, String specialty, boolean isPresent) {
+        this.mName = mName;
+        this.id = id;
+        this.specialty = specialty;
+        this.isPresent = isPresent;
+    }
+
+    public int returnCookingTime(){
+        int total = 0;
+        for(OrderDetailsDb dish:ChefQueue){
+
+            if (dish.getStatus() == MainActivity.COOKING)
+                total += MainActivity.getDishCookingTime(dish.getDishname());
+        }
+
+        return total;
+    }
+
+    public int returnWaitingTime(){
+        int total = 0;
+        for(OrderDetailsDb dish:ChefQueue){
+
+            if (dish.getStatus() == MainActivity.WAITING)
+                total += MainActivity.getDishCookingTime(dish.getDishname());
+        }
+
+        return total;
+    }
 
     public boolean isPresent() {
         return isPresent;
@@ -71,6 +113,10 @@ public class Chef implements Serializable
     public void addOrder(Order order)
     {
         mOrder.add(order);
+    }
+
+    public void addDish(OrderDetailsDb dish){
+        ChefQueue.add(dish);
     }
 
 }
