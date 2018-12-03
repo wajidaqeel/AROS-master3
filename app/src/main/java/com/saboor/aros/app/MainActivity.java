@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadAttendance(){
+        progressDialog.setMessage("Loading availability info...");
         mDatabase.getReference("Attendance").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity
                         mChefs.add(new Chef(employee.getName(), employee.getId(), new ArrayList<Order>()));
                     }
                 }
-                progressDialog.dismiss();
+                //progressDialog.dismiss();
                 ExtractOrdersOfChefsFromDb();
                 loadAttendance();
             }
@@ -169,8 +170,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        progressDialog.setMessage("Loading availability info...");
-        progressDialog.show();
 
 
 
@@ -178,7 +177,7 @@ public class MainActivity extends AppCompatActivity
 
     private void ExtractOrdersOfChefsFromDb()
     {
-        mChefs.get(0).addOrder(new Order("Ready","Burger"));
+        /*mChefs.get(0).addOrder(new Order("Ready","Burger"));
         mChefs.get(0).addOrder(new Order("Ready","Fries"));
         mChefs.get(0).addOrder(new Order("Cooking","Rice"));
         mChefs.get(0).addOrder(new Order("Cooking","Chicken Maslaa"));
@@ -190,7 +189,7 @@ public class MainActivity extends AppCompatActivity
         mChefs.get(0).addOrder(new Order("Cooking","3"));
         mChefs.get(0).addOrder(new Order("Cooking","8"));
         mChefs.get(0).addOrder(new Order("Waiting","Pasta"));
-        mChefs.get(0).addOrder(new Order("Waiting","Mutton handi"));
+        mChefs.get(0).addOrder(new Order("Waiting","Mutton handi"));*/
 
        /* mChefs.get(1).addOrder(new Order("Cooking","Zinger"));
         mChefs.get(1).addOrder(new Order("Cooking","Fries"));
