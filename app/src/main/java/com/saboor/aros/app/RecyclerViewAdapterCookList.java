@@ -1,3 +1,7 @@
+/** This File is used as an adapter to show the chefs,
+ * after head chef wants to transfer some order in waiting state from one chef to some other chef
+**/
+
 package com.saboor.aros.app;
 
 import android.content.Context;

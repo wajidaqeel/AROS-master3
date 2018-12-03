@@ -1,3 +1,8 @@
+/**
+ * This adapter is used to show the chefs and their orders in
+ * main screen of kitchen module (Head Chef)
+* */
+
 package com.saboor.aros.app;
 
 import android.content.Context;
@@ -48,39 +53,6 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
         RecyclerViewAdapterOrdersOfCook adapter2 = new RecyclerViewAdapterOrdersOfCook(mContext, mChefs.get(position).getChefQueue(),position);
         adapters.add(adapter2);
         recyclerView.setAdapter(adapters.get(adapters.size()-1));
-
-        holder.name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                Intent i = new Intent(mContext, MainActivity.class);
-                MainActivity.chefNo = position;
-                holder.itemView.setBackgroundColor(Color.parseColor("#228B22"));
-
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                mContext.startActivity(i);
-
-                Toast.makeText(mContext, mChefs.get(position).getName(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                Intent i = new Intent(mContext, MainActivity.class);
-                MainActivity.chefNo = position;
-                holder.itemView.setBackgroundColor(Color.parseColor("#228B22"));
-
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                mContext.startActivity(i);
-
-                Toast.makeText(mContext, mChefs.get(position).getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
         if(!mChefs.get(position).isPresent()){
             holder.name.setVisibility(View.GONE);
