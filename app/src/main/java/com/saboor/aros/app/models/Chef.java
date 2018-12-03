@@ -121,7 +121,6 @@ public class Chef implements Serializable
     }*/
 
     public void addHighPriorityDish(OrderDetailsDb dish){
-        addDish(dish);
         Collections.sort(ChefQueue, new OrderComparator());
 
         boolean found = false;
@@ -142,7 +141,8 @@ public class Chef implements Serializable
     }
     public void addDish(OrderDetailsDb dish){
         ChefQueue.add(dish);
-
+        if(dish.getPriority() == MainActivity.HIGHPRIORITY)
+            addHighPriorityDish(dish);
     }
 
 }
