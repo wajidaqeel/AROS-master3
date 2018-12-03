@@ -197,13 +197,15 @@ public class MainActivity extends AppCompatActivity
                 OrderDetailsDb dish = dataSnapshot.getValue(OrderDetailsDb.class);
                 dish.setNodeId(dataSnapshot.getKey());
 
-                if(!assignDishToChef(dish)){
-                    orderDetails.add(dish);
-                }
-                else{
-                    reinitializeCookAdapter();
-                   // if (dish.getDishname().equals("Soup"))
-                     //   updateDishStatus(dish, 9);
+                if(dish.getStatus() == WAITING || dish.getStatus() == COOKING){
+                    if(!assignDishToChef(dish)){
+                        orderDetails.add(dish);
+                    }
+                    else{
+                        reinitializeCookAdapter();
+                        // if (dish.getDishname().equals("Soup"))
+                        //   updateDishStatus(dish, 9);
+                    }
                 }
 
                 dismissProgressBar();
