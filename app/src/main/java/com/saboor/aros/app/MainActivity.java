@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity
     public static int WAITING = 0;
     public static int COOKING = 1;
     public static int READY = 2;
+    public static int HIGHPRIORITY = 1;
+    public static int LOWPRIORITY = 0;
 
     public static ArrayList<Chef> mChefs = new ArrayList<>();
     public static ArrayList<AttendanceDb> attendanceDbs = new ArrayList<>();
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     //public static ArrayList<Chef> allChefs = new ArrayList<>();
     int x = 1;
     public static int chefNo = 0;
-    FirebaseDatabase mDatabase;
+    private static FirebaseDatabase mDatabase;
     DatabaseReference myDbRef;
     ActionBar actionBar;
     ProgressDialog progressDialog;
@@ -135,8 +137,8 @@ public class MainActivity extends AppCompatActivity
 
         if(time != -1){
             temp.addDish(dish);
-            temp.addOrder(new Order(( new Integer(dish.getStatus())).toString(), dish.getDishname()));
-            updateDishTime(dish, temp.returnCookingTime() + temp.returnWaitingTime());
+            //temp.addOrder(new Order(( new Integer(dish.getStatus())).toString(), dish.getDishname()));
+            updateDishTime(dish, temp.returnCookingTime() + temp.returnWaitingTime() + getDishCookingTime(dish.getDishname()));
             return true;
         }
 
@@ -160,8 +162,8 @@ public class MainActivity extends AppCompatActivity
 
         if (time != -1){
             temp.addDish(dish);
-            temp.addOrder(new Order(( new Integer(dish.getStatus())).toString(), dish.getDishname()));
-            updateDishTime(dish, temp.returnCookingTime() + temp.returnWaitingTime());
+            //temp.addOrder(new Order(( new Integer(dish.getStatus())).toString(), dish.getDishname()));
+            updateDishTime(dish, temp.returnCookingTime() + temp.returnWaitingTime() + getDishCookingTime(dish.getDishname()));
             return true;
         }
         else
@@ -180,7 +182,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void updateDishTime(OrderDetailsDb dish, int newTime){
+    public static void updateDishTime(OrderDetailsDb dish, int newTime){
         mDatabase.getReference("OrderDetails").child(dish.getNodeId()).child("estimatedtime").setValue(newTime);
         dish.setEstimatedtime(newTime);
     }

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.saboor.aros.R;
 import com.saboor.aros.app.listener.OnSwipeTouchListener;
 import com.saboor.aros.app.models.Order;
+import com.saboor.aros.app.models.OrderDetailsDb;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,11 +31,11 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderViewHolder>
 {
     Context mContext;
-    ArrayList<Order> mData;
+    ArrayList<OrderDetailsDb> mData;
     Dialog myDialog;
     int mCookNo;
 
-    public RecyclerViewAdapterOrdersOfCook(Context context, ArrayList<Order> data, int cookNo)
+    public RecyclerViewAdapterOrdersOfCook(Context context, ArrayList<OrderDetailsDb> data, int cookNo)
     {
         mContext = context;
         mData = data;
@@ -55,9 +56,9 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
     public void onBindViewHolder(@NonNull OrderViewHolder holder, final int position)
     {
 
-        holder.order_name.setText(mData.get(position).getItemName());
-        holder.order_status.setText(mData.get(position).getStatus());
-        String status=mData.get(position).getStatus();
+        holder.order_name.setText(mData.get(position).getDishname());
+        holder.order_status.setText((new Integer(mData.get(position).getStatus())).toString());
+        String status= (new Integer(mData.get(position).getStatus())).toString();
         if(status.equals("Cooking"))
         {
             holder.itemView.setBackgroundColor(Color.parseColor("#ffeee0"));
@@ -118,7 +119,7 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
 
     private void removeItemFromList(int position)
     {
-        if(mData.get(position).getStatus().equals("Ready"))
+        /*if(mData.get(position).getStatus().equals("Ready"))
         {
             Toast.makeText(mContext, "Order has been served", Toast.LENGTH_SHORT).show();
             mData.remove(position);
@@ -137,6 +138,6 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
             Toast.makeText(mContext, "Order has been wasted", Toast.LENGTH_SHORT).show();
             mData.remove(position);
             RecyclerViewAdapterCook.adapters.get(mCookNo).notifyDataSetChanged();
-        }
+        }*/
     }
 }

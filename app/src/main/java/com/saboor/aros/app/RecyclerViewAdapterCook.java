@@ -45,7 +45,7 @@ public class RecyclerViewAdapterCook extends RecyclerView.Adapter<RecyclerViewAd
         final RecyclerView recyclerView = holder.mRecyclerView;
         recyclerView.setLayoutManager(layoutManager);
 
-        RecyclerViewAdapterOrdersOfCook adapter2 = new RecyclerViewAdapterOrdersOfCook(mContext, mChefs.get(position).getOrder(),position);
+        RecyclerViewAdapterOrdersOfCook adapter2 = new RecyclerViewAdapterOrdersOfCook(mContext, mChefs.get(position).getChefQueue(),position);
         adapters.add(adapter2);
         recyclerView.setAdapter(adapters.get(adapters.size()-1));
 

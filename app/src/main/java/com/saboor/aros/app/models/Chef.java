@@ -4,20 +4,25 @@ import com.saboor.aros.app.MainActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.MissingFormatArgumentException;
 
 public class Chef implements Serializable
 {
     private String mName;
     private String id;
-    private ArrayList<Order> mOrder;
+    //private ArrayList<Order> mOrder;
     private String specialty;
     private ArrayList<OrderDetailsDb> ChefQueue;
+
+    public ArrayList<OrderDetailsDb> getChefQueue() {
+        return ChefQueue;
+    }
 
     public Chef(String mName, String id, ArrayList<Order> mOrder, String specialty, ArrayList<OrderDetailsDb> chefQueue, boolean isPresent) {
         this.mName = mName;
         this.id = id;
-        this.mOrder = mOrder;
+        //this.mOrder = mOrder;
         this.specialty = specialty;
         ChefQueue = chefQueue;
         this.isPresent = isPresent;
@@ -73,7 +78,7 @@ public class Chef implements Serializable
     public Chef(String name)
     {
         mName = name;
-        mOrder = new ArrayList<>();
+       // mOrder = new ArrayList<>();
     }
 
     public void setId(String id) {
@@ -83,7 +88,7 @@ public class Chef implements Serializable
     public Chef(String mName, String id, ArrayList<Order> mOrder) {
         this.mName = mName;
         this.id = id;
-        this.mOrder = mOrder;
+       // this.mOrder = mOrder;
     }
 
     public String getId() {
@@ -100,23 +105,44 @@ public class Chef implements Serializable
         mName = name;
     }
 
-    public ArrayList<Order> getOrder()
+    /*public ArrayList<Order> getOrder()
     {
         return mOrder;
-    }
+    }*/
 
-    public void setOrder(ArrayList<Order> order)
+    /*public void setOrder(ArrayList<Order> order)
     {
         mOrder = order;
-    }
+    }*/
 
-    public void addOrder(Order order)
+    /*public void addOrder(Order order)
     {
         mOrder.add(order);
-    }
+    }*/
 
+    public void addHighPriorityDish(OrderDetailsDb dish){
+        addDish(dish);
+        Collections.sort(ChefQueue, new OrderComparator());
+
+        boolean found = false;
+        int totaltime = returnCookingTime();
+        for (OrderDetailsDb dis: ChefQueue){
+            if (found){
+                totaltime += MainActivity.getDishCookingTime(dis.getDishname());
+                MainActivity.updateDishTime(dis, totaltime);
+            }
+            else{
+                totaltime += MainActivity.getDishCookingTime(dis.getDishname());
+            }
+            if(dis.getDishname().equals(dish.getDishname()) && dis.getOrderid().equals(dish.getOrderid())){
+                MainActivity.updateDishTime(dis, totaltime);
+                found = true;
+            }
+        }
+    }
     public void addDish(OrderDetailsDb dish){
         ChefQueue.add(dish);
+
     }
 
 }
