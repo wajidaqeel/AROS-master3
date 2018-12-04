@@ -47,9 +47,9 @@ public class RecyclerViewAdapterAttendanceList extends RecyclerView.Adapter<Recy
                 if (isChecked)
                     mChefs.get(position).setPresent(true);
                 else{
-                    if(mChefs.get(position).isCooking())
-                        Toast.makeText(mContext, "This chef is cooking", Toast.LENGTH_SHORT);
-                    else
+                    //if(mChefs.get(position).isCooking())
+                     //   Toast.makeText(mContext, "This chef is cooking", Toast.LENGTH_SHORT);
+                   // else
                         mChefs.get(position).setPresent(false);
                 }
 

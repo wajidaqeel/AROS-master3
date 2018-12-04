@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -88,6 +89,11 @@ public class AttendanceActivity extends AppCompatActivity
 
         for (Chef chef:chefs){
             if(!chef.isPresent()){
+                if(chef.isCooking()){
+                    Toast.makeText(this, chef.getName()+ " is cooking!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    return;
+                }
                 for(OrderDetailsDb dish:chef.getChefQueue()){
                     MainActivity.orderDetails.add(dish);
                 }
