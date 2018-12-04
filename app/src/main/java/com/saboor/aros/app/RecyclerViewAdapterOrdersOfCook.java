@@ -150,6 +150,7 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
                                         String orderId = mData.get(position).getOrderid();
                                         int servings = mData.get(position).getServings();
                                         int enteredQuantity= Integer.parseInt(userInput.getText().toString());
+                                        String dishname = mData.get(position).getDishname();
 
                                         if(enteredQuantity>servings)
                                         {
@@ -159,6 +160,7 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
                                         {
 
                                             //Ramsha's Code here
+                                            //Three variables required are enteredQuantity, servings, orderId, dishname
 
                                             if(enteredQuantity == servings){
                                                 //MainActivity.updateDishStatus(mData.get(position), MainActivity.READY);
