@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.saboor.aros.R;
 import com.saboor.aros.app.models.Chef;
@@ -33,16 +34,19 @@ public class CooksListActivity extends AppCompatActivity
         mChefs = MainActivity.mChefs;
 
         //mChefs = (ArrayList<Chef>) getIntent().getSerializableExtra("chefs_list");
-        initRecyclerView(RecyclerViewAdapterOrdersOfCook.itemNo, /*RecyclerViewAdapterOrdersOfCook.mCookNo*/0);
+        initRecyclerView(RecyclerViewAdapterOrdersOfCook.itemNo, getIntent().getExtras().getInt("cookNo"));
+        Log.i("error12", getIntent().getIntExtra("cookNo",0) + " ");
+
+        // initRecyclerView(RecyclerViewAdapterOrdersOfCook.itemNo, /*RecyclerViewAdapterOrdersOfCook.mCookNo*/0);
     }
 
-    private void initRecyclerView(int itemNo, int chefNo)
+    private void initRecyclerView(int itemNo, int cookNo)
     {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = findViewById(R.id.recyclerView3);
         recyclerView.setLayoutManager(layoutManager);
 
-        RecyclerViewAdapterCookList adapter = new RecyclerViewAdapterCookList(this, mChefs, itemNo, chefNo, this);
+        RecyclerViewAdapterCookList adapter = new RecyclerViewAdapterCookList(this, mChefs, itemNo, cookNo, this);
         recyclerView.setAdapter(adapter);
     }
 }

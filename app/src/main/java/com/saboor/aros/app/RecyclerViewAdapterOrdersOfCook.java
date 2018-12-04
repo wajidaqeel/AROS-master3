@@ -56,7 +56,7 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
     ArrayList<TextView> mTextViews;
 
     Dialog myDialog;
-    static int mCookNo;
+    int mCookNo;
     static int itemNo;
 
     public RecyclerViewAdapterOrdersOfCook(Context context, ArrayList<OrderDetailsDb> data, int cookNo)
@@ -64,6 +64,7 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
         mContext = context;
         mData = data;
         mCookNo = cookNo;
+        Toast.makeText(context, "sssss" + cookNo, Toast.LENGTH_SHORT).show();
         mTextViews = new ArrayList<>();
     }
 
@@ -187,6 +188,7 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
             public void onClick(View view)
             {
                 itemNo = position;
+
                 chooseChef();
             }
         });
@@ -224,8 +226,11 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
     {
         Intent intent = new Intent(mContext, CooksListActivity.class);
         //mContext.startActivity(intent);
+        intent.putExtra("cookNo", mCookNo);
+        //Toast.makeText(mContext, mCookNo + "", Toast.LENGTH_SHORT).show();
         ((Activity)mContext).startActivityForResult(intent, 345);
        // ((MainActivity)mContext).startActivityForResult(intent, 70);
+        // Toast.makeText(mContext, mCookNo + "", Toast.LENGTH_SHORT).show();
     }
 
     private void ChangeStateOfOrder(int position, OrderViewHolder holder)
