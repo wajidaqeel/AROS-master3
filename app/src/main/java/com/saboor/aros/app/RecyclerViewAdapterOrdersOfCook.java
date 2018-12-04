@@ -36,16 +36,20 @@ import com.google.firebase.database.ValueEventListener;
 import com.saboor.aros.R;
 import com.saboor.aros.app.listener.OnSwipeTouchListener;
 import com.saboor.aros.app.models.Order;
+import com.saboor.aros.app.models.OrderComparator;
+import com.saboor.aros.app.models.OrderDb;
 import com.saboor.aros.app.models.OrderDetailsDb;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static com.saboor.aros.app.MainActivity.READY;
 import static com.saboor.aros.app.MainActivity.dishes;
 import static java.security.AccessController.getContext;
 
@@ -237,18 +241,30 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
     {
         if(mData.get(position).getStatus() == MainActivity.WAITING)
         {
-            Toast.makeText(mContext, "Order moved to Ready state", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Order moved to Cooking state", Toast.LENGTH_SHORT).show();
 
             holder.button.setVisibility(View.INVISIBLE);
             holder.itemView.setBackgroundColor(Color.parseColor("#ffeee0"));
 
            // mData.get(position).setStatus(MainActivity.READY);
             MainActivity.updateDishStatus(mData.get(position), MainActivity.COOKING);
+            MainActivity.updateOrderStatusCooking(mData.get(position).getOrderid());
+            Collections.sort(mData, new OrderComparator());
+            notifyDataSetChanged();
         }
         else
         {
             Toast.makeText(mContext, "Order Cooked", Toast.LENGTH_SHORT).show();
             MainActivity.updateDishStatus(mData.get(position), MainActivity.READY);
+
+            if(MainActivity.isOrderCompleted(mData.get(position).getOrderid())){
+                OrderDb thisorder = MainActivity.getOrderFromId(mData.get(position).getOrderid());
+
+                if (thisorder != null)
+                    MainActivity.updateOrderStatus(thisorder, READY);
+            }
+
+
             mData.remove(position);
             MainActivity.adapter.notifyDataSetChanged();
         }

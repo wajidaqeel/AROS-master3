@@ -34,6 +34,7 @@ import com.saboor.aros.app.models.Dish;
 import com.saboor.aros.app.models.DishDb;
 import com.saboor.aros.app.models.EmployeeDb;
 import com.saboor.aros.app.models.Order;
+import com.saboor.aros.app.models.OrderDb;
 import com.saboor.aros.app.models.OrderDetailsDb;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity
     static ArrayList<Chef> mChefs;
     static ArrayList<DishDb> dishes = new ArrayList<>();
     static RecyclerViewAdapterCook adapter;
-
+    public static ArrayList<OrderDb> orders = new ArrayList<>();
     //public static ArrayList<Chef> allChefs = new ArrayList<>();
     int x = 1;
     static int chefNo = 0;
@@ -211,6 +212,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 dismissProgressBar();
+
             }
 
             @Override
@@ -313,6 +315,7 @@ public class MainActivity extends AppCompatActivity
                 initRecyclerView();
 
                 ExtractMenuFromDb();
+                getOrdersFromDb();
             }
 
             @Override
@@ -406,5 +409,81 @@ public class MainActivity extends AppCompatActivity
 
         RecyclerViewAdapterCook adapter = new RecyclerViewAdapterCook(this, mChefs);
         recyclerView.setAdapter(adapter);
+    }
+
+    public static void updateOrderStatus(OrderDb order, int newStatus){
+
+        mDatabase.getReference("Order").child(order.getNodeid()).child("status").setValue(newStatus);
+        order.setStatus(newStatus);
+
+    }
+
+    private void getOrdersFromDb(){
+        mDatabase.getReference("Order").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                startProgressBar("Adding orders...");
+
+                OrderDb order = dataSnapshot.getValue(OrderDb.class);
+                order.setNodeid(dataSnapshot.getKey());
+
+                if(order.getStatus() == WAITING || order.getStatus() == COOKING){
+                    orders.add(order);
+                }
+
+                dismissProgressBar();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static boolean isOrderCompleted(String orderId){
+        for(Chef chef:mChefs){
+            for(OrderDetailsDb dish:chef.getChefQueue()){
+
+                if(dish.getOrderid().equals(orderId) && (dish.getStatus() == WAITING || dish.getStatus() == COOKING))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static OrderDb getOrderFromId(String id){
+        for (OrderDb order:orders){
+            if(order.getId().equals(id))
+                return order;
+        }
+
+        return null;
+    }
+
+    public static void updateOrderStatusCooking(String orderId){
+        for(OrderDb order:orders){
+            if(order.getStatus() == WAITING){
+                updateOrderStatus(order, COOKING);
+                order.setStatus(COOKING);
+            }
+        }
     }
 }
