@@ -124,7 +124,7 @@ public class Chef implements Serializable
         Collections.sort(ChefQueue, new OrderComparator());
 
         boolean found = false;
-        int totaltime = returnCookingTime();
+        int totaltime = 0;
         for (OrderDetailsDb dis: ChefQueue){
             if (found){
                 totaltime += MainActivity.getDishCookingTime(dis.getDishname());

@@ -1,6 +1,9 @@
 package com.saboor.aros.app.models;
 
-public class AttendanceDb {
+import java.io.Serializable;
+
+public class AttendanceDb implements Serializable
+{
     private String id;
     private Boolean present;
 

@@ -1,6 +1,9 @@
 package com.saboor.aros.app.models;
 
-public class EmployeeDb {
+import java.io.Serializable;
+
+public class EmployeeDb implements Serializable
+{
 
     private String email;
     private String id;

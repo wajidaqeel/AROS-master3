@@ -4,6 +4,7 @@
 
 package com.saboor.aros.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,12 +23,18 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapterCookList extends RecyclerView.Adapter<RecyclerViewAdapterCookList.ViewHolder>
 {
-    private ArrayList<Chef> mChefs = new ArrayList<>();
-    private Context mContext;
+    ArrayList<Chef> mChefs = new ArrayList<>();
+    Context mContext;
+    int itemNo;
+    int chefNo;
+    CooksListActivity activity;
 
-    public RecyclerViewAdapterCookList(Context context, ArrayList<Chef> chefs)
+    public RecyclerViewAdapterCookList(Context context, ArrayList<Chef> chefs, int itemNo, int chefNo, CooksListActivity activity)
     {
         this.mChefs = chefs;
+        this.itemNo = itemNo;
+        this.chefNo = chefNo;
+        this.activity = activity;
         mContext = context;
     }
 
@@ -48,15 +55,20 @@ public class RecyclerViewAdapterCookList extends RecyclerView.Adapter<RecyclerVi
             @Override
             public void onClick(View view)
             {
-                Intent i = new Intent(mContext, MainActivity.class);
-                MainActivity.chefNo = position;
-                holder.itemView.setBackgroundColor(Color.parseColor("#228B22"));
+                MainActivity.mChefs.get(position).getChefQueue().
+                        add(MainActivity.mChefs.get(chefNo).getChefQueue().get(itemNo));
+                //((MainActivity)mContext).reinitializeCookAdapter();/////////////
 
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                MainActivity.mChefs.get(chefNo).getChefQueue().remove(itemNo);
 
-                mContext.startActivity(i);
-
+                MainActivity.adapter.notifyDataSetChanged();
                 Toast.makeText(mContext, mChefs.get(position).getName() + " has been assigned the dish", Toast.LENGTH_SHORT).show();
+                // MainActivity.selected = true;
+                // MainActivity.mChefs = mChefs;
+
+                //Intent inte = new Intent();
+                activity.setResult(Activity.RESULT_OK);/*, inte);*/
+                activity.finish();
             }
         });
 
@@ -64,16 +76,20 @@ public class RecyclerViewAdapterCookList extends RecyclerView.Adapter<RecyclerVi
             @Override
             public void onClick(View view)
             {
-                Intent i = new Intent(mContext, MainActivity.class);
-                MainActivity.chefNo = position;
-                holder.itemView.setBackgroundColor(Color.parseColor("#228B22"));
-
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                mContext.startActivity(i);
+                MainActivity.mChefs.get(position).getChefQueue().
+                        add(MainActivity.mChefs.get(chefNo).getChefQueue().get(itemNo));
 
 
+                MainActivity.mChefs.get(chefNo).getChefQueue().remove(itemNo);
+                MainActivity.adapter.notifyDataSetChanged();
                 Toast.makeText(mContext, mChefs.get(position).getName() + " has been assigned the dish", Toast.LENGTH_SHORT).show();
+
+               // ((MainActivity)mContext).reinitializeCookAdapter();/////////////
+                // MainActivity.selected = true;
+                // MainActivity.mChefs = mChefs;
+
+                activity.setResult(Activity.RESULT_OK);
+                activity.finish();
             }
         });
     }

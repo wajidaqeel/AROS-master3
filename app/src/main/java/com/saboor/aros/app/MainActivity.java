@@ -17,6 +17,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.firebase.database.ChildEventListener;
@@ -45,14 +46,17 @@ public class MainActivity extends AppCompatActivity
     public static int HIGHPRIORITY = 1;
     public static int LOWPRIORITY = 0;
 
-    public static ArrayList<Chef> mChefs = new ArrayList<>();
-    public static ArrayList<AttendanceDb> attendanceDbs = new ArrayList<>();
-    public static ArrayList<DishDb> dishes = new ArrayList<>();
-    public ArrayList<OrderDetailsDb> orderDetails = new ArrayList<>();
+    ArrayList<OrderDetailsDb> orderDetails = new ArrayList<>();
+    static ArrayList<AttendanceDb> attendanceDbs = new ArrayList<>();
+    static ArrayList<Chef> mChefs;
+    static ArrayList<DishDb> dishes = new ArrayList<>();
+    static RecyclerViewAdapterCook adapter;
+
     //public static ArrayList<Chef> allChefs = new ArrayList<>();
     int x = 1;
-    public static int chefNo = 0;
-    private static FirebaseDatabase mDatabase;
+    static int chefNo = 0;
+    static FirebaseDatabase mDatabase;
+    static Boolean selected = false;
     DatabaseReference myDbRef;
     ActionBar actionBar;
     ProgressDialog progressDialog;
@@ -62,6 +66,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
 
         setContentView(R.layout.activity_main);
         actionBar=getSupportActionBar();
@@ -73,27 +79,16 @@ public class MainActivity extends AppCompatActivity
         mDatabase = FirebaseDatabase.getInstance();
         myDbRef = mDatabase.getReference("Employee");
 
+        // mChefs.clear();
+        // dishes.clear();
+
         //getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.cardview_dark_background)));
-        ExtractChefsFromDb();
-
-
-
-        //ExtractOrders();
-
-        /*if(findViewById(R.id.list_of_items) != null)
-        {
-            if(savedInstanceState != null)
-            {
-                return;
-            }
-            BlankFragmentNotDone blankFragment = new BlankFragmentNotDone();
-            Bundle bundle = new Bundle();
-            bundle.putString("test","abc");
-            blankFragment.setArguments(bundle);
-            // We can set arguments here
-            getSupportFragmentManager().beginTransaction().add(blankFragment,null).commit();
-            //getSupportFragmentManager().beginTransaction().replace(R.id.list_of_items,blankFragment).commit();
-        }*/
+        /*if(!selected)
+        {*/
+            ExtractChefsFromDb();
+            mChefs = new ArrayList<>();
+            selected = false;
+        // }
     }
 
     public static int getDishCookingTime(String dish){
@@ -160,7 +155,8 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        if (time != -1){
+        if (time != -1)
+        {
             temp.addDish(dish);
             //temp.addOrder(new Order(( new Integer(dish.getStatus())).toString(), dish.getDishname()));
             updateDishTime(dish, temp.returnCookingTime() + temp.returnWaitingTime() + getDishCookingTime(dish.getDishname()));
@@ -170,24 +166,26 @@ public class MainActivity extends AppCompatActivity
             return false;
     }
 
-    private void reinitializeCookAdapter(){
-        RecyclerViewAdapterCook adapter = new RecyclerViewAdapterCook(this, mChefs);
+    public void reinitializeCookAdapter()
+    {
+        adapter = new RecyclerViewAdapterCook(this, mChefs);
         recyclerView.setAdapter(adapter);
-        //recyclerView.notify();
     }
 
-    private void updateDishStatus(OrderDetailsDb dish, int newStatus){
+    private void updateDishStatus(OrderDetailsDb dish, int newStatus)
+    {
         mDatabase.getReference("OrderDetails").child(dish.getNodeId()).child("status").setValue(newStatus);
         dish.setStatus(newStatus);
-
     }
 
-    public static void updateDishTime(OrderDetailsDb dish, int newTime){
+    public static void updateDishTime(OrderDetailsDb dish, int newTime)
+    {
         mDatabase.getReference("OrderDetails").child(dish.getNodeId()).child("estimatedtime").setValue(newTime);
         dish.setEstimatedtime(newTime);
     }
 
-    private void ExtractOrders(){
+    private void ExtractOrders()
+    {
         mDatabase.getReference("OrderDetails").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -197,13 +195,19 @@ public class MainActivity extends AppCompatActivity
                 OrderDetailsDb dish = dataSnapshot.getValue(OrderDetailsDb.class);
                 dish.setNodeId(dataSnapshot.getKey());
 
-                if(!assignDishToChef(dish)){
-                    orderDetails.add(dish);
-                }
-                else{
-                    reinitializeCookAdapter();
-                   // if (dish.getDishname().equals("Soup"))
-                     //   updateDishStatus(dish, 9);
+                if(dish.getStatus() == WAITING || dish.getStatus() == COOKING)
+                {
+                    if (!assignDishToChef(dish))
+                    {
+                        // If dish is in waiting or cooking state then show it
+                        orderDetails.add(dish);
+                    }
+                    else
+                    {
+                        reinitializeCookAdapter();
+                        // if (dish.getDishname().equals("Soup"))
+                        //   updateDishStatus(dish, 9);
+                    }
                 }
 
                 dismissProgressBar();
@@ -231,17 +235,19 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void startProgressBar(String message){
+    private void startProgressBar(String message)
+    {
         progressDialog.setMessage(message);
         progressDialog.show();
-
     }
 
-    private void dismissProgressBar(){
+    private void dismissProgressBar()
+    {
         progressDialog.dismiss();
     }
 
-    public void ExtractMenuFromDb(){
+    public void ExtractMenuFromDb()
+    {
         mDatabase.getReference("Menu").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -250,7 +256,7 @@ public class MainActivity extends AppCompatActivity
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     DishDb dish = postSnapshot.getValue(DishDb.class);
-                    dishes.add(dish);
+                        dishes.add(dish);
                 }
 
                 dismissProgressBar();
@@ -265,8 +271,8 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void openAttendance(View view){
-
+    public void openAttendance(View view)
+    {
         Intent intent = new Intent(MainActivity.this, AttendanceActivity.class);
         intent.putExtra("chefs", new ArrayList<>(mChefs));
         startActivity(intent);
@@ -283,6 +289,8 @@ public class MainActivity extends AppCompatActivity
                 }
                 recyclerView.notify();
             }
+
+            recyclerView.notify();
         }
     }
 
@@ -316,8 +324,9 @@ public class MainActivity extends AppCompatActivity
 
     private void ExtractChefsFromDb()
     {
-        /*mChefs.clear();
-
+        /*
+        // Testing
+        mChefs.clear();
         mChefs.add(new Chef("Chef 1"));
         mChefs.add(new Chef("Chef 2"));
         mChefs.add(new Chef("Chef 3"));
@@ -356,15 +365,13 @@ public class MainActivity extends AppCompatActivity
                 progressDialog.dismiss();
             }
         });
-
-
-
-
     }
 
     private void ExtractOrdersOfChefsFromDb()
     {
-        /*mChefs.get(0).addOrder(new Order("Ready","Burger"));
+        /*
+        // Testing
+        mChefs.get(0).addOrder(new Order("Ready","Burger"));
         mChefs.get(0).addOrder(new Order("Ready","Fries"));
         mChefs.get(0).addOrder(new Order("Cooking","Rice"));
         mChefs.get(0).addOrder(new Order("Cooking","Chicken Maslaa"));
@@ -377,7 +384,6 @@ public class MainActivity extends AppCompatActivity
         mChefs.get(0).addOrder(new Order("Cooking","8"));
         mChefs.get(0).addOrder(new Order("Waiting","Pasta"));
         mChefs.get(0).addOrder(new Order("Waiting","Mutton handi"));*/
-
        /* mChefs.get(1).addOrder(new Order("Cooking","Zinger"));
         mChefs.get(1).addOrder(new Order("Cooking","Fries"));
         mChefs.get(2).addOrder(new Order("Cooking","Biryani"));

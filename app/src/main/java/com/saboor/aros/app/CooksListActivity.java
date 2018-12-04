@@ -33,16 +33,16 @@ public class CooksListActivity extends AppCompatActivity
         mChefs = MainActivity.mChefs;
 
         //mChefs = (ArrayList<Chef>) getIntent().getSerializableExtra("chefs_list");
-        initRecyclerView();
+        initRecyclerView(RecyclerViewAdapterOrdersOfCook.itemNo, RecyclerViewAdapterOrdersOfCook.mCookNo);
     }
 
-    private void initRecyclerView()
+    private void initRecyclerView(int itemNo, int chefNo)
     {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = findViewById(R.id.recyclerView3);
         recyclerView.setLayoutManager(layoutManager);
 
-        RecyclerViewAdapterCookList adapter = new RecyclerViewAdapterCookList(this, mChefs);
+        RecyclerViewAdapterCookList adapter = new RecyclerViewAdapterCookList(this, mChefs, itemNo, chefNo, this);
         recyclerView.setAdapter(adapter);
     }
 }

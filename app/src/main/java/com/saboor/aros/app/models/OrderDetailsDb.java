@@ -1,6 +1,9 @@
 package com.saboor.aros.app.models;
 
-public class OrderDetailsDb {
+import java.io.Serializable;
+
+public class OrderDetailsDb implements Serializable
+{
 
     private String dishname;
     private int estimatedtime;

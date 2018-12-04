@@ -12,7 +12,9 @@ public class OrderViewHolder extends RecyclerView.ViewHolder
 {
     public CardView order_row;
     public TextView order_name;
-    public TextView order_status;
+    public TextView order_serving;
+    public TextView eta;
+
     public Button button;
 
     public OrderViewHolder(View view)
@@ -21,7 +23,8 @@ public class OrderViewHolder extends RecyclerView.ViewHolder
 
         order_row = itemView.findViewById(R.id.order_row_id);
         order_name = itemView.findViewById(R.id.order_name);
-        order_status = itemView.findViewById(R.id.order_status);
+        order_serving = itemView.findViewById(R.id.order_serving);
         button=itemView.findViewById(R.id.button2);
+        eta = itemView.findViewById(R.id.eta);
     }
 }
