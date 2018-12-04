@@ -33,7 +33,7 @@ public class CooksListActivity extends AppCompatActivity
         mChefs = MainActivity.mChefs;
 
         //mChefs = (ArrayList<Chef>) getIntent().getSerializableExtra("chefs_list");
-        initRecyclerView(RecyclerViewAdapterOrdersOfCook.itemNo, RecyclerViewAdapterOrdersOfCook.mCookNo);
+        initRecyclerView(RecyclerViewAdapterOrdersOfCook.itemNo, /*RecyclerViewAdapterOrdersOfCook.mCookNo*/0);
     }
 
     private void initRecyclerView(int itemNo, int chefNo)

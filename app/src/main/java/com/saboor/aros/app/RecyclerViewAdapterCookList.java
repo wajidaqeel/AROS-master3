@@ -55,6 +55,7 @@ public class RecyclerViewAdapterCookList extends RecyclerView.Adapter<RecyclerVi
             @Override
             public void onClick(View view)
             {
+
                 MainActivity.mChefs.get(position).getChefQueue().
                         add(MainActivity.mChefs.get(chefNo).getChefQueue().get(itemNo));
                 //((MainActivity)mContext).reinitializeCookAdapter();/////////////
@@ -67,8 +68,11 @@ public class RecyclerViewAdapterCookList extends RecyclerView.Adapter<RecyclerVi
                 // MainActivity.mChefs = mChefs;
 
                 //Intent inte = new Intent();
-                activity.setResult(Activity.RESULT_OK);/*, inte);*/
+                //activity.setResult(Activity.RESULT_OK);/*, inte);*/
                 activity.finish();
+                //Intent intent = new Intent();
+                //((Activity)mContext).setResult(Activity.RESULT_OK, intent);
+                //((Activity)mContext).finish();
             }
         });
 
@@ -88,8 +92,11 @@ public class RecyclerViewAdapterCookList extends RecyclerView.Adapter<RecyclerVi
                 // MainActivity.selected = true;
                 // MainActivity.mChefs = mChefs;
 
-                activity.setResult(Activity.RESULT_OK);
+                //activity.setResult(Activity.RESULT_OK);
                 activity.finish();
+                //Intent intent = new Intent();
+                //((Activity)mContext).setResult(Activity.RESULT_OK, intent);
+                //((Activity)mContext).finish();
             }
         });
     }

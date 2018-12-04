@@ -1,6 +1,7 @@
 package com.saboor.aros.app;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -121,7 +122,51 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
             @Override
             public boolean onLongClick(View view)
             {
-                removeItemFromList(position);
+                //removeItemFromList(position);
+                LayoutInflater li = LayoutInflater.from(mContext);
+                View promptsView = li.inflate(R.layout.prompts, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        mContext);
+
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final EditText userInput = (EditText) promptsView
+                        .findViewById(R.id.editTextDialogUserInput);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        Toast.makeText(mContext, userInput.getText().toString(), Toast.LENGTH_LONG ).show();       // get user input and set it to result
+                                        // edit text
+                                        //result.setText(userInput.getText());
+                                        //Call Maryam's function here
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+               // alertDialogBuilder.setPositiveButtonIcon(R.drawable.check);
+                //alertDialogBuilder.setNegativeButtonIcon(R.drawable.cancel)
+                //alertDialogBuilder.setPositiveButtonIcon()
+                //Button positiveButton = alertDialogBuilder.getButton(AlertDialog.BUTTON_POSITIVE);
+
+
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+                //AlertDialog dialog = Builder.create();
+
+
                 return true;
             }
         });
@@ -178,7 +223,8 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
     public void chooseChef()        // Which item to move from one chef to the other
     {
         Intent intent = new Intent(mContext, CooksListActivity.class);
-        mContext.startActivity(intent);
+        //mContext.startActivity(intent);
+        ((Activity)mContext).startActivityForResult(intent, 345);
        // ((MainActivity)mContext).startActivityForResult(intent, 70);
     }
 
