@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(adapter);
     }
 
-    private void updateDishStatus(OrderDetailsDb dish, int newStatus)
+    public static void updateDishStatus(OrderDetailsDb dish, int newStatus)
     {
         mDatabase.getReference("OrderDetails").child(dish.getNodeId()).child("status").setValue(newStatus);
         dish.setStatus(newStatus);

@@ -141,7 +141,7 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int id) {
                                         Toast.makeText(mContext, userInput.getText().toString(), Toast.LENGTH_LONG ).show();       // get user input and set it to result
-                                        // edit text
+                                       // edit text
                                         //result.setText(userInput.getText());
                                         //Call Maryam's function here
                                     }
@@ -237,12 +237,13 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
             holder.button.setVisibility(View.INVISIBLE);
             holder.itemView.setBackgroundColor(Color.parseColor("#ffeee0"));
 
-            mData.get(position).setStatus(MainActivity.READY);
+           // mData.get(position).setStatus(MainActivity.READY);
+            MainActivity.updateDishStatus(mData.get(position), MainActivity.COOKING);
         }
         else
         {
             Toast.makeText(mContext, "Order Cooked", Toast.LENGTH_SHORT).show();
-
+            MainActivity.updateDishStatus(mData.get(position), MainActivity.READY);
             mData.remove(position);
             MainActivity.adapter.notifyDataSetChanged();
         }
