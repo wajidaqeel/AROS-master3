@@ -18,6 +18,7 @@ import com.saboor.aros.R;
 import com.saboor.aros.app.RecyclerViewAdapterCook;
 import com.saboor.aros.app.models.AttendanceDb;
 import com.saboor.aros.app.models.Chef;
+import com.saboor.aros.app.models.OrderDetailsDb;
 
 import java.util.ArrayList;
 
@@ -86,6 +87,13 @@ public class AttendanceActivity extends AppCompatActivity
         progressDialog.show();
 
         for (Chef chef:chefs){
+            if(!chef.isPresent()){
+                for(OrderDetailsDb dish:chef.getChefQueue()){
+                    MainActivity.orderDetails.add(dish);
+                }
+                chef.setChefQueue(new ArrayList<OrderDetailsDb>());
+            }
+
             DatabaseReference myRef = database.getReference("Attendance/" + chef.getId());
             myRef.setValue(new AttendanceDb(chef.getId(), chef.isPresent()));
         }

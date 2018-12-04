@@ -28,6 +28,14 @@ public class Chef implements Serializable
         this.isPresent = isPresent;
     }
 
+    public boolean isCooking(){
+        for(OrderDetailsDb dish:ChefQueue){
+            if(dish.getStatus() == MainActivity.COOKING)
+                return true;
+        }
+        return false;
+    }
+
     public Chef(String mName, String id, String specialty, boolean isPresent) {
         this.mName = mName;
         this.id = id;
@@ -67,6 +75,10 @@ public class Chef implements Serializable
 
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
+    }
+
+    public void setChefQueue(ArrayList<OrderDetailsDb> chefQueue) {
+        ChefQueue = chefQueue;
     }
 
     public void setPresent(boolean present) {

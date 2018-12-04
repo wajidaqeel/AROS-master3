@@ -32,6 +32,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:background="#f56653"
+        android:onClick="onLoadBalancingClicked"
         android:text="Load Balancing"
         android:textColor="@color/cardview_light_background"
         app:layout_constraintEnd_toEndOf="parent"

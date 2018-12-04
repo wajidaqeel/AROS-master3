@@ -139,16 +139,37 @@ public class RecyclerViewAdapterOrdersOfCook extends RecyclerView.Adapter<OrderV
                 final EditText userInput = (EditText) promptsView
                         .findViewById(R.id.editTextDialogUserInput);
 
+
+
                 // set dialog message
                 alertDialogBuilder
                         .setCancelable(false)
                         .setPositiveButton("OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int id) {
-                                        Toast.makeText(mContext, userInput.getText().toString(), Toast.LENGTH_LONG ).show();       // get user input and set it to result
-                                       // edit text
-                                        //result.setText(userInput.getText());
-                                        //Call Maryam's function here
+                                        String orderId = mData.get(position).getOrderid();
+                                        int servings = mData.get(position).getServings();
+                                        int enteredQuantity= Integer.parseInt(userInput.getText().toString());
+
+                                        if(enteredQuantity>servings)
+                                        {
+                                            Toast.makeText(mContext, "Invalid Number of servings wasted", Toast.LENGTH_LONG ).show();       // get user input and set it to result
+                                        }
+                                        else
+                                        {
+
+                                            //Ramsha's Code here
+
+                                            if(enteredQuantity == servings){
+                                                //MainActivity.updateDishStatus(mData.get(position), MainActivity.READY);
+                                                MainActivity.removeOrderDetailsFromDb(mData.get(position));
+                                                mData.remove(position);
+                                            }
+                                            else{
+                                                MainActivity.updateDishServings(mData.get(position), mData.get(position).getServings() - enteredQuantity);
+                                            }
+                                            MainActivity.adapter.notifyDataSetChanged();
+                                        }
                                     }
                                 })
                         .setNegativeButton("Cancel",

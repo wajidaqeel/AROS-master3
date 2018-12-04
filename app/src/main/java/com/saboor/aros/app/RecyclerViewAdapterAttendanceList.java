@@ -46,16 +46,26 @@ public class RecyclerViewAdapterAttendanceList extends RecyclerView.Adapter<Recy
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked)
                     mChefs.get(position).setPresent(true);
-                else
-                    mChefs.get(position).setPresent(false);
+                else{
+                    if(mChefs.get(position).isCooking())
+                        Toast.makeText(mContext, "This chef is cooking", Toast.LENGTH_SHORT);
+                    else
+                        mChefs.get(position).setPresent(false);
+                }
+
             }
         });
 
         holder.cookName.setText(mChefs.get(position).getName());
         if(mChefs.get(position).isPresent())
             holder.presentSwitch.setChecked(true);
-        else
-            holder.presentSwitch.setChecked(false);
+        else{
+            if(mChefs.get(position).isCooking())
+                Toast.makeText(mContext, "This chef is cooking", Toast.LENGTH_SHORT);
+            else
+                holder.presentSwitch.setChecked(false);
+        }
+
     }
 
     public ArrayList<Chef> getmChefs(){

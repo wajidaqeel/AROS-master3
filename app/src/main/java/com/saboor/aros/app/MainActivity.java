@@ -46,8 +46,9 @@ public class MainActivity extends AppCompatActivity
     public static int READY = 2;
     public static int HIGHPRIORITY = 1;
     public static int LOWPRIORITY = 0;
+  //  RecyclerViewAdapterCook adapter;
 
-    ArrayList<OrderDetailsDb> orderDetails = new ArrayList<>();
+    static ArrayList<OrderDetailsDb> orderDetails = new ArrayList<>();
     static ArrayList<AttendanceDb> attendanceDbs = new ArrayList<>();
     static ArrayList<Chef> mChefs;
     static ArrayList<DishDb> dishes = new ArrayList<>();
@@ -108,6 +109,39 @@ public class MainActivity extends AppCompatActivity
         }
 
         return "";
+    }
+
+    public void onLoadBalancingClicked(View view){
+        for(Chef chef:mChefs){
+            for (OrderDetailsDb dish:chef.getChefQueue()){
+                if(dish.getStatus() == WAITING)
+                    orderDetails.add(dish);
+            }
+
+        }
+
+        for (Chef chef:mChefs){
+            boolean removed = true;
+            while(removed){
+                removed = false;
+                for (int i=0;i<chef.getChefQueue().size();i++){
+                    if (chef.getChefQueue().get(i).getStatus() == WAITING){
+                        chef.getChefQueue().remove(i);
+                        removed = true;
+                    }
+                }
+            }
+        }
+
+        boolean assigned = true;
+
+        for(OrderDetailsDb dish:orderDetails){
+            assigned = assignDishToChef(dish);
+        }
+        if(assigned)
+            orderDetails = new ArrayList<>();
+
+        adapter.notifyDataSetChanged();
     }
 
     private boolean assignDishToChef(OrderDetailsDb dish){
@@ -173,10 +207,20 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setAdapter(adapter);
     }
 
+    public static void removeOrderDetailsFromDb(OrderDetailsDb dish){
+        mDatabase.getReference("OrderDetails").child(dish.getNodeId()).removeValue();
+    }
+
     public static void updateDishStatus(OrderDetailsDb dish, int newStatus)
     {
         mDatabase.getReference("OrderDetails").child(dish.getNodeId()).child("status").setValue(newStatus);
         dish.setStatus(newStatus);
+    }
+
+    public static void updateDishServings(OrderDetailsDb dish, int newServings)
+    {
+        mDatabase.getReference("OrderDetails").child(dish.getNodeId()).child("servings").setValue(newServings);
+        dish.setServings(newServings);
     }
 
     public static void updateDishTime(OrderDetailsDb dish, int newTime)
@@ -286,9 +330,11 @@ public class MainActivity extends AppCompatActivity
 
         if (resultCode == RESULT_OK){
             if (requestCode == 123){
+                boolean assigned = true;
                 for (OrderDetailsDb dish:orderDetails){
-                    assignDishToChef(dish);
+                    assigned = assignDishToChef(dish);
                 }
+                orderDetails = new ArrayList<>();
                 recyclerView.notify();
             }
 
@@ -407,7 +453,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
 
-        RecyclerViewAdapterCook adapter = new RecyclerViewAdapterCook(this, mChefs);
+        adapter = new RecyclerViewAdapterCook(this, mChefs);
         recyclerView.setAdapter(adapter);
     }
 
